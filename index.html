@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Zero to Confident</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <p class="eyebrow">Python For Absolute Beginners</p>
+      <h1>Zero to Confident</h1>
+      <p class="sidebar-copy">
+        Learn Python step by step with simple explanations, runnable code, mini quizzes,
+        and Tamil YouTube learning links for every concept.
+      </p>
+
+      <section class="progress-card">
+        <div class="card-row">
+          <div>
+            <p class="card-label">Course Progress</p>
+            <p id="progress-text" class="progress-text">0 of 20 completed</p>
+          </div>
+          <strong id="completion-count" class="progress-number">0/20</strong>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </section>
+
+      <details class="sidebar-card sidebar-dropdown" open>
+        <summary class="dropdown-summary">Course Modules</summary>
+        <div id="module-list" class="module-list"></div>
+      </details>
+
+      <details class="sidebar-card sidebar-dropdown" open>
+        <summary class="dropdown-summary">Learning Path</summary>
+        <nav id="lesson-list" class="lesson-list" aria-label="Lesson navigation"></nav>
+      </details>
+    </aside>
+
+    <main class="main-panel">
+      <section class="lesson-panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Current Concept</p>
+            <h2 id="lesson-title">Loading...</h2>
+          </div>
+          <div class="lesson-badge">
+            <span id="lesson-tag">Basics</span>
+          </div>
+        </div>
+
+        <p id="lesson-summary" class="summary"></p>
+
+        <article class="overview-card">
+          <div class="card-row">
+            <h3>Why this concept matters</h3>
+            <span id="lesson-number" class="small-note">Lesson 1</span>
+          </div>
+          <p id="lesson-why" class="soft-text"></p>
+          <div class="checkpoint-row">
+            <div class="checkpoint-card">
+              <span class="checkpoint-label">Before this lesson</span>
+              <strong id="lesson-before"></strong>
+            </div>
+            <div class="checkpoint-card">
+              <span class="checkpoint-label">After this lesson</span>
+              <strong id="lesson-after"></strong>
+            </div>
+          </div>
+        </article>
+
+        <div class="lesson-grid">
+          <article class="info-card">
+            <h3>Core idea</h3>
+            <p id="lesson-concept"></p>
+          </article>
+          <article class="info-card">
+            <h3>Real-world meaning</h3>
+            <p id="lesson-analogy"></p>
+          </article>
+        </div>
+
+        <div class="lesson-grid lesson-grid-tight">
+          <article class="info-card">
+            <h3>Syntax tip</h3>
+            <p id="syntax-tip"></p>
+          </article>
+          <article class="info-card">
+            <h3>Common beginner mistake</h3>
+            <p id="common-mistake"></p>
+          </article>
+        </div>
+
+        <article class="example-card">
+          <div class="card-row">
+            <h3>Example code</h3>
+            <button id="use-example" class="secondary-btn" type="button">Use Example</button>
+          </div>
+          <pre><code id="lesson-code"></code></pre>
+          <p id="lesson-explanation" class="soft-text"></p>
+        </article>
+
+        <article class="video-card">
+          <div class="card-row">
+            <h3>Tamil video lesson</h3>
+            <span class="small-note">Direct teaching video</span>
+          </div>
+          <p class="soft-text">
+            These are direct Tamil YouTube lessons for this concept, so learners can watch an actual explanation instead of a search page.
+          </p>
+          <div id="video-links" class="video-links"></div>
+        </article>
+      </section>
+
+      <section class="practice-panel">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Practice Lab</p>
+            <h2>Write, run, and understand</h2>
+          </div>
+          <button id="mark-review" class="secondary-btn" type="button">Reset Lesson</button>
+        </div>
+
+        <p id="practice-prompt" class="summary"></p>
+        <textarea id="practice-area" spellcheck="false" aria-label="Python code editor"></textarea>
+
+        <label class="input-label" for="program-input">Program input (optional)</label>
+        <textarea id="program-input" class="input-box" spellcheck="false" placeholder="Type values here if your code uses input(). Put each answer on a new line."></textarea>
+
+        <div class="button-row">
+          <button id="run-code" class="primary-btn" type="button">Run Code</button>
+          <button id="show-hint" class="secondary-btn" type="button">Show Hint</button>
+          <button id="prev-lesson" class="secondary-btn" type="button">Previous</button>
+          <button id="next-lesson" class="secondary-btn" type="button">Next</button>
+        </div>
+
+        <p id="practice-hint" class="hint" hidden></p>
+        <p id="practice-feedback" class="soft-text" aria-live="polite"></p>
+
+        <div class="practice-grid">
+          <article class="output-card">
+            <div class="card-row">
+              <h3>Output</h3>
+              <button id="clear-output" class="secondary-btn" type="button">Clear</button>
+            </div>
+            <pre id="output-console" class="output-console">Your output will appear here.</pre>
+          </article>
+
+          <article class="quiz-card">
+            <h3>Quick check</h3>
+            <p id="quiz-question" class="soft-text"></p>
+            <div id="quiz-options" class="quiz-options"></div>
+            <p id="quiz-feedback" class="soft-text" aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

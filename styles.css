@@ -179,14 +179,22 @@ h2 {
   display: none;
 }
 
-.dropdown-summary::after {
-  content: "▾";
-  float: right;
-  color: var(--accent-dark);
+.dropdown-summary {
+    cursor: pointer;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.sidebar-dropdown:not([open]) .dropdown-summary::after {
-  content: "▸";
+.dropdown-summary::after {
+    content: "▶";
+    transition: transform 0.3s ease;
+}
+
+.sidebar-dropdown[open] .dropdown-summary::after {
+    transform: rotate(90deg);
 }
 
 .module-list {

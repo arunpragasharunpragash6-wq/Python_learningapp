@@ -1,81 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python Zero to Confident - V2</title>
-<link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Zero to Confident - V2</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="app-shell">
-<aside class="sidebar">
-<div class="brand"><h1>🐍 Python Zero to Confident</h1><p>Learn Python step by step</p></div>
-<section class="progress-card">
-<h3>Course Progress</h3>
-<div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
-<p id="progress-text">0 / 22 Lessons Completed</p>
-<strong id="completion-count">0/22</strong>
-</section>
-<details class="sidebar-dropdown">
-<summary>📘 Modules</summary>
-<div id="module-list"></div>
-</details>
-</aside>
-<main class="main-content">
-<section class="lesson-header">
-<span id="lesson-number"></span>
-<h2 id="lesson-title"></h2>
-<span id="lesson-tag"></span>
-<p id="lesson-summary"></p>
-</section>
-<section class="card">
-<h3>Why This Matters</h3>
-<p id="lesson-why"></p>
-<div class="lesson-grid">
-<div><h4>Before</h4><p id="lesson-before"></p></div>
-<div><h4>After</h4><p id="lesson-after"></p></div>
-</div>
-</section>
-<section class="card">
-<h3>Core Idea</h3><p id="lesson-concept"></p>
-<h3>Real World Analogy</h3><p id="lesson-analogy"></p>
-<h3>Syntax Tip</h3><p id="syntax-tip"></p>
-<h3>Common Beginner Mistake</h3><p id="common-mistake"></p>
-</section>
-<section class="card">
-<div class="section-head"><h3>Example Code</h3><button id="use-example">Use Example</button></div>
-<pre><code id="lesson-code"></code></pre>
-<p id="lesson-explanation"></p>
-<div id="video-links"></div>
-</section>
-<section class="card practice-card">
-<h2>🧪 Try it Yourself</h2>
-<label>Your Python Code</label>
-<textarea id="practice-area"></textarea>
-<label>Program Input (Optional)</label>
-<textarea id="program-input"></textarea>
-<div class="button-row">
-<button id="run-code">▶ Run Code</button>
-<button id="show-hint">💡 Hint</button>
-<button id="mark-review">↺ Reset</button>
-</div>
-<p id="practice-hint" hidden></p>
-<p id="practice-feedback"></p>
-<h3>Output</h3>
-<pre id="output-console">Your output will appear here.</pre>
-</section>
-<section class="card">
-<h2>Quick Quiz</h2>
-<p id="quiz-question"></p>
-<div id="quiz-options"></div>
-<p id="quiz-feedback"></p>
-</section>
-<section class="lesson-navigation">
-<button id="prev-lesson">← Previous Lesson</button>
-<button id="next-lesson">Next Lesson →</button>
-</section>
-</main>
-</div>
-<script src="/app.js"></script>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Python Zero to Confident</h1>
+        <p>Learn Python from scratch with direct Tamil lessons, guided practice, and runnable code.</p>
+      </div>
+
+      <section class="progress-card">
+        <h3>Course Progress</h3>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <p id="progress-text">0 / 20 Lessons Completed</p>
+        <strong id="completion-count">0/20</strong>
+      </section>
+
+      <details class="sidebar-dropdown" open>
+        <summary>Modules</summary>
+        <div id="module-list"></div>
+      </details>
+    </aside>
+
+    <main class="main-content">
+      <section class="lesson-header">
+        <span id="lesson-number"></span>
+        <h2 id="lesson-title">Loading lesson...</h2>
+        <div class="lesson-meta">
+          <span id="lesson-tag" class="lesson-tag">Basics</span>
+          <span id="lesson-status" class="lesson-status">Locked</span>
+        </div>
+        <p id="lesson-summary"></p>
+      </section>
+
+      <section class="card">
+        <h3>Why This Matters</h3>
+        <p id="lesson-why"></p>
+        <div class="lesson-grid">
+          <div>
+            <h4>Before</h4>
+            <p id="lesson-before"></p>
+          </div>
+          <div>
+            <h4>After</h4>
+            <p id="lesson-after"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>Core Idea</h3>
+        <p id="lesson-concept"></p>
+        <h3>Real World Analogy</h3>
+        <p id="lesson-analogy"></p>
+        <h3>Syntax Tip</h3>
+        <p id="syntax-tip"></p>
+        <h3>Common Beginner Mistake</h3>
+        <p id="common-mistake"></p>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h3>Example Code</h3>
+          <button id="use-example" type="button">Use Example</button>
+        </div>
+        <pre><code id="lesson-code"></code></pre>
+        <p id="lesson-explanation"></p>
+        <div id="video-links" class="video-links"></div>
+      </section>
+
+      <section class="card practice-card">
+        <h2>Try it Yourself</h2>
+        <p id="practice-prompt" class="practice-prompt"></p>
+
+        <label for="practice-area">Your Python Code</label>
+        <textarea id="practice-area" spellcheck="false"></textarea>
+
+        <label for="program-input">Program Input (Optional)</label>
+        <textarea
+          id="program-input"
+          spellcheck="false"
+          placeholder="If your code uses input(), put each answer on a new line."
+        ></textarea>
+
+        <div class="button-row">
+          <button id="run-code" type="button">Run Code</button>
+          <button id="show-hint" type="button">Hint</button>
+          <button id="mark-review" type="button">Reset</button>
+        </div>
+
+        <p id="practice-hint" hidden></p>
+        <p id="practice-feedback"></p>
+
+        <h3>Output</h3>
+        <pre id="output-console">Your output will appear here.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Quick Quiz</h2>
+        <p id="quiz-question"></p>
+        <div id="quiz-options"></div>
+        <p id="quiz-feedback"></p>
+      </section>
+
+      <section class="lesson-navigation">
+        <button id="prev-lesson" type="button">Previous Lesson</button>
+        <button id="next-lesson" type="button">Next Lesson</button>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
 </body>
 </html>

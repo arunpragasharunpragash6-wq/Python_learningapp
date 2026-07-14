@@ -1,164 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python Zero to Confident</title>
-  <link rel="stylesheet" href="/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Zero to Confident - V2</title>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <p class="eyebrow">Python For Absolute Beginners</p>
-      <h1>Zero to Confident</h1>
-      <p class="sidebar-copy">
-        Learn Python step by step with simple explanations, runnable code, mini quizzes,
-        and Tamil YouTube learning links for every concept.
-      </p>
-
-      <section class="progress-card">
-        <div class="card-row">
-          <div>
-            <p class="card-label">Course Progress</p>
-            <p id="progress-text" class="progress-text">0 of 20 completed</p>
-          </div>
-          <strong id="completion-count" class="progress-number">0/20</strong>
-        </div>
-        <div class="progress-track" aria-hidden="true">
-          <div id="progress-fill" class="progress-fill"></div>
-        </div>
-      </section>
-
-  <details class="sidebar-card sidebar-dropdown">
-      <summary class="dropdown-summary">Course Modules</summary>
-      <div id="module-list" class="module-list"></div>
-  </details>
-
-  <details class="sidebar-card sidebar-dropdown">
-      <summary class="dropdown-summary">Learning Path</summary>
-      <nav id="lesson-list" class="lesson-list"></nav>
-  </details>
-
-    <main class="main-panel">
-      <section class="lesson-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Current Concept</p>
-            <h2 id="lesson-title">Loading...</h2>
-          </div>
-          <div class="lesson-badge">
-            <span id="lesson-tag">Basics</span>
-          </div>
-        </div>
-
-        <p id="lesson-summary" class="summary"></p>
-
-        <article class="overview-card">
-          <div class="card-row">
-            <h3>Why this concept matters</h3>
-            <span id="lesson-number" class="small-note">Lesson 1</span>
-          </div>
-          <p id="lesson-why" class="soft-text"></p>
-          <div class="checkpoint-row">
-            <div class="checkpoint-card">
-              <span class="checkpoint-label">Before this lesson</span>
-              <strong id="lesson-before"></strong>
-            </div>
-            <div class="checkpoint-card">
-              <span class="checkpoint-label">After this lesson</span>
-              <strong id="lesson-after"></strong>
-            </div>
-          </div>
-        </article>
-
-        <div class="lesson-grid">
-          <article class="info-card">
-            <h3>Core idea</h3>
-            <p id="lesson-concept"></p>
-          </article>
-          <article class="info-card">
-            <h3>Real-world meaning</h3>
-            <p id="lesson-analogy"></p>
-          </article>
-        </div>
-
-        <div class="lesson-grid lesson-grid-tight">
-          <article class="info-card">
-            <h3>Syntax tip</h3>
-            <p id="syntax-tip"></p>
-          </article>
-          <article class="info-card">
-            <h3>Common beginner mistake</h3>
-            <p id="common-mistake"></p>
-          </article>
-        </div>
-
-        <article class="example-card">
-          <div class="card-row">
-            <h3>Example code</h3>
-            <button id="use-example" class="secondary-btn" type="button">Use Example</button>
-          </div>
-          <pre><code id="lesson-code"></code></pre>
-          <p id="lesson-explanation" class="soft-text"></p>
-        </article>
-
-        <article class="video-card">
-          <div class="card-row">
-            <h3>Tamil video lesson</h3>
-            <span class="small-note">Direct teaching video</span>
-          </div>
-          <p class="soft-text">
-            These are direct Tamil YouTube lessons for this concept, so learners can watch an actual explanation instead of a search page.
-          </p>
-          <div id="video-links" class="video-links"></div>
-        </article>
-      </section>
-
-      <section class="practice-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Practice Lab</p>
-            <h2>Write, run, and understand</h2>
-          </div>
-          <button id="mark-review" class="secondary-btn" type="button">Reset Lesson</button>
-        </div>
-
-        <p id="practice-prompt" class="summary"></p>
-        <textarea id="practice-area" spellcheck="false" aria-label="Python code editor"></textarea>
-
-        <label class="input-label" for="program-input">Program input (optional)</label>
-        <textarea id="program-input" class="input-box" spellcheck="false" placeholder="Type values here if your code uses input(). Put each answer on a new line."></textarea>
-
-        <div class="button-row">
-          <button id="run-code" class="primary-btn" type="button">Run Code</button>
-          <button id="show-hint" class="secondary-btn" type="button">Show Hint</button>
-          <button id="prev-lesson" class="secondary-btn" type="button">Previous</button>
-          <button id="next-lesson" class="secondary-btn" type="button">Next</button>
-        </div>
-
-        <p id="practice-hint" class="hint" hidden></p>
-        <p id="practice-feedback" class="soft-text" aria-live="polite"></p>
-
-        <div class="practice-grid">
-          <article class="output-card">
-            <div class="card-row">
-              <h3>Output</h3>
-              <button id="clear-output" class="secondary-btn" type="button">Clear</button>
-            </div>
-            <pre id="output-console" class="output-console">Your output will appear here.</pre>
-          </article>
-
-          <article class="quiz-card">
-            <h3>Quick check</h3>
-            <p id="quiz-question" class="soft-text"></p>
-            <div id="quiz-options" class="quiz-options"></div>
-            <p id="quiz-feedback" class="soft-text" aria-live="polite"></p>
-          </article>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script src="/app.js"></script>
+<div class="app-shell">
+<aside class="sidebar">
+<div class="brand"><h1>🐍 Python Zero to Confident</h1><p>Learn Python step by step</p></div>
+<section class="progress-card">
+<h3>Course Progress</h3>
+<div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+<p id="progress-text">0 / 22 Lessons Completed</p>
+<strong id="completion-count">0/22</strong>
+</section>
+<details class="sidebar-dropdown">
+<summary>📘 Modules</summary>
+<div id="module-list"></div>
+</details>
+</aside>
+<main class="main-content">
+<section class="lesson-header">
+<span id="lesson-number"></span>
+<h2 id="lesson-title"></h2>
+<span id="lesson-tag"></span>
+<p id="lesson-summary"></p>
+</section>
+<section class="card">
+<h3>Why This Matters</h3>
+<p id="lesson-why"></p>
+<div class="lesson-grid">
+<div><h4>Before</h4><p id="lesson-before"></p></div>
+<div><h4>After</h4><p id="lesson-after"></p></div>
+</div>
+</section>
+<section class="card">
+<h3>Core Idea</h3><p id="lesson-concept"></p>
+<h3>Real World Analogy</h3><p id="lesson-analogy"></p>
+<h3>Syntax Tip</h3><p id="syntax-tip"></p>
+<h3>Common Beginner Mistake</h3><p id="common-mistake"></p>
+</section>
+<section class="card">
+<div class="section-head"><h3>Example Code</h3><button id="use-example">Use Example</button></div>
+<pre><code id="lesson-code"></code></pre>
+<p id="lesson-explanation"></p>
+<div id="video-links"></div>
+</section>
+<section class="card practice-card">
+<h2>🧪 Try it Yourself</h2>
+<label>Your Python Code</label>
+<textarea id="practice-area"></textarea>
+<label>Program Input (Optional)</label>
+<textarea id="program-input"></textarea>
+<div class="button-row">
+<button id="run-code">▶ Run Code</button>
+<button id="show-hint">💡 Hint</button>
+<button id="mark-review">↺ Reset</button>
+</div>
+<p id="practice-hint" hidden></p>
+<p id="practice-feedback"></p>
+<h3>Output</h3>
+<pre id="output-console">Your output will appear here.</pre>
+</section>
+<section class="card">
+<h2>Quick Quiz</h2>
+<p id="quiz-question"></p>
+<div id="quiz-options"></div>
+<p id="quiz-feedback"></p>
+</section>
+<section class="lesson-navigation">
+<button id="prev-lesson">← Previous Lesson</button>
+<button id="next-lesson">Next Lesson →</button>
+</section>
+</main>
+</div>
+<script src="/app.js"></script>
 </body>
 </html>

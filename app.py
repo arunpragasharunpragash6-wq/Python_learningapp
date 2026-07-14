@@ -1,4 +1,5 @@
 import json
+import mimetypes
 import os
 import subprocess
 import sys
@@ -8,14 +9,19 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-HOST = os.environ.get("HOST", "0.0.0.0")
+HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8000"))
 STATIC_FILES = {
-    "/": ("index.html", "text/html; charset=utf-8"),
-    "/index.html": ("index.html", "text/html; charset=utf-8"),
-    "/styles.css": ("styles.css", "text/css; charset=utf-8"),
-    "/app.js": ("app.js", "application/javascript; charset=utf-8"),
+    "/": "index.html",
+    "/index.html": "index.html",
+    "/styles.css": "styles.css",
+    "/app.js": "app.js",
 }
+
+
+def get_content_type(file_path: Path) -> str:
+    guessed, _ = mimetypes.guess_type(str(file_path))
+    return guessed or "application/octet-stream"
 
 
 def normalize_output(stdout: str, stderr: str) -> str:
@@ -46,7 +52,7 @@ def execute_python(code: str, stdin_text: str) -> dict:
     except subprocess.TimeoutExpired:
         return {
             "ok": False,
-            "output": "Execution stopped after 4 seconds. Try a smaller example or check for an endless loop.",
+            "output": "Execution stopped after 4 seconds. Try smaller code or check for an endless loop.",
         }
     finally:
         temp_path.unlink(missing_ok=True)
@@ -54,16 +60,19 @@ def execute_python(code: str, stdin_text: str) -> dict:
 
 class AppHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path not in STATIC_FILES:
+        static_name = STATIC_FILES.get(self.path)
+        if not static_name:
             self.send_error(HTTPStatus.NOT_FOUND, "File not found")
             return
 
-        filename, content_type = STATIC_FILES[self.path]
-        file_path = ROOT / filename
-        content = file_path.read_bytes()
+        file_path = ROOT / static_name
+        if not file_path.exists():
+            self.send_error(HTTPStatus.NOT_FOUND, "Missing static file")
+            return
 
+        content = file_path.read_bytes()
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Type", get_content_type(file_path))
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
         self.wfile.write(content)
@@ -101,5 +110,5 @@ class AppHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer((HOST, PORT), AppHandler)
-    print(f"Python Zero to Confident running at http://{HOST}:{PORT}")
+    print(f"Python Zero to Confident V2 running at http://{HOST}:{PORT}")
     server.serve_forever()

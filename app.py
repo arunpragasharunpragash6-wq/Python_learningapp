@@ -9,7 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-HOST = os.environ.get("HOST", "127.0.0.1")
+HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8000"))
 STATIC_FILES = {
     "/": "index.html",

@@ -1,17 +1,29 @@
-# Python Zero to Confident
+# Python Zero to Confident - V2
 
-This app teaches Python to absolute beginners with a structured concept roadmap, runnable examples, quick quizzes, and Tamil YouTube learning links for each topic.
+This project is a beginner-focused Python learning product with:
 
-## Files
+- a V2 course interface
+- module-based lesson navigation
+- direct Tamil YouTube concept links
+- runnable Python practice
+- quick quizzes
+- saved local progress
 
-- `app.py` starts the local server and runs learner code
-- `index.html` contains the course UI
-- `styles.css` contains the styling
-- `app.js` contains the lessons, quizzes, Tamil video links, and progress logic
+## Project files
 
-## Run it
+- `index.html`: main V2 user interface
+- `styles.css`: V2 styling and responsive layout
+- `app.js`: lesson data, module rendering, quizzes, progress, and practice behavior
+- `app.py`: lightweight local Python server and code execution endpoint
+- `start-app.bat`: local launcher for Windows
 
-Use the bundled Python runtime in this Codex environment:
+## How to run locally
+
+Option 1:
+
+`start-app.bat`
+
+Option 2:
 
 `C:\Users\Arun\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe app.py`
 
@@ -19,39 +31,18 @@ Then open:
 
 `http://127.0.0.1:8000`
 
-Or just run:
-
-`start-app.bat`
-
-## Current notes
+## Current behavior
 
 - learner code is limited to 4 seconds
-- `input()` is supported through the optional program input box
-- lesson progress is saved in browser local storage
-- Tamil video links open YouTube search results so they stay current
+- `input()` works through the Program Input box
+- progress is saved in browser local storage
+- direct Tamil lesson links open on YouTube
 
-## Deployment warning
+## Safety note
 
 This app includes a code execution endpoint at `/api/run`.
 
 That means:
 
-- it is fine for local use or private demos
-- it is not safe to deploy publicly as-is for untrusted users
-
-If you want public deployment, the code runner should be isolated in a proper sandbox or disabled.
-
-## Cloud deployment
-
-The server now supports environment-based host and port values:
-
-- `HOST`
-- `PORT`
-
-Example:
-
-`python app.py`
-
-On most cloud hosts, set the start command to:
-
-`python app.py`
+- it is suitable for local use and private demos
+- it is not safe to deploy publicly for untrusted users without sandboxing

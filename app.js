@@ -9,7 +9,7 @@ const lessons = [
     after: "You can display text and simple values",
     concept: "print() tells Python to display a message or value.",
     analogy: "It is like asking the computer to speak one line.",
-    syntaxTip: "Text must go inside quotes, like print(\"Hello\").",
+    syntaxTip: 'Text must go inside quotes, like print("Hello").',
     commonMistake: "Using smart quotes or forgetting the closing quote causes errors.",
     code: 'print("My name is Arun")\nprint("I want to become a data analyst")',
     explanation: "Each print() runs one line. Python reads the first line, then the next line.",
@@ -31,7 +31,7 @@ const lessons = [
     after: "You can store and reuse data",
     concept: "A variable is a name that points to a value.",
     analogy: "Think of it like a labeled box storing one piece of information.",
-    syntaxTip: "Use = to assign a value. Example: name = \"Arun\"",
+    syntaxTip: 'Use = to assign a value. Example: name = "Arun"',
     commonMistake: "Putting quotes around the variable name itself changes it into plain text.",
     code: 'name = "Arun"\ngoal = "Data Analyst"\nprint(name)\nprint(goal)',
     explanation: "The value is stored once and reused many times.",
@@ -58,7 +58,7 @@ const lessons = [
     code: 'name = "Arun"\nage = 22\nprint(name)\nprint(age + 5)',
     explanation: "Python can do math with numbers, but text behaves differently.",
     practice: "Create one string variable and one number variable, then print both.",
-    hint: 'Example: age = 21',
+    hint: "Example: age = 21",
     quiz: { question: "Which one is a string?", options: ['"Python"', "10", "3.14"], answer: 0 },
     videos: [
       { label: "Watch data types lesson", url: "https://www.youtube.com/watch?v=_Z-gxEAhQgg" },
@@ -159,7 +159,7 @@ const lessons = [
     tag: "Loops",
     title: "For Loops",
     summary: "Loops repeat code without rewriting it again and again.",
-    why: "Repetition is one of programming’s biggest powers, and loops save a lot of manual work.",
+    why: "Repetition is one of programming's biggest powers, and loops save a lot of manual work.",
     before: "You understand indentation",
     after: "You can repeat actions a fixed number of times",
     concept: "A for loop repeats a block for each item in a sequence.",
@@ -488,21 +488,21 @@ const lessons = [
 ];
 
 const storageKey = "python-zero-to-confident-progress";
-
 const defaultState = {
   lessonIndex: 0,
+  codePassed: [],
   completedLessons: [],
   quizCorrect: []
 };
 
 const moduleDescriptions = {
-  "Getting Started": "First steps: output, variables, types, operators",
-  "Control Flow": "Input, conditions, and repetition",
-  "Functions and Reuse": "Breaking code into reusable pieces",
+  "Getting Started": "First steps: output, variables, data types, and operators",
+  "Control Flow": "Input, conditions, and loops",
+  "Functions and Reuse": "Reusable logic and return values",
   "Collections": "Lists, tuples, sets, and dictionaries",
-  "Working With Data": "Text handling and iterating through items",
-  "Files and Errors": "Reading files and handling exceptions",
-  "Bigger Programs": "Modules, classes, and mini project thinking"
+  "Working With Data": "Strings and iterating through collections",
+  "Files and Errors": "Files, input safety, and exceptions",
+  "Bigger Programs": "Imports, objects, and mini projects"
 };
 
 function loadState() {
@@ -514,6 +514,7 @@ function loadState() {
 
     return {
       lessonIndex: Number.isInteger(stored.lessonIndex) ? stored.lessonIndex : 0,
+      codePassed: Array.isArray(stored.codePassed) ? stored.codePassed : [],
       completedLessons: Array.isArray(stored.completedLessons) ? stored.completedLessons : [],
       quizCorrect: Array.isArray(stored.quizCorrect) ? stored.quizCorrect : []
     };
@@ -524,10 +525,10 @@ function loadState() {
 
 const state = loadState();
 
-const lessonList = document.getElementById("lesson-list");
 const moduleList = document.getElementById("module-list");
 const lessonTitle = document.getElementById("lesson-title");
 const lessonTag = document.getElementById("lesson-tag");
+const lessonStatus = document.getElementById("lesson-status");
 const lessonNumber = document.getElementById("lesson-number");
 const lessonSummary = document.getElementById("lesson-summary");
 const lessonWhy = document.getElementById("lesson-why");
@@ -572,6 +573,13 @@ function markCompleted(index) {
   }
 }
 
+function markCodePassed(index) {
+  if (!state.codePassed.includes(index)) {
+    state.codePassed.push(index);
+    saveState();
+  }
+}
+
 function markQuizCorrect(index) {
   if (!state.quizCorrect.includes(index)) {
     state.quizCorrect.push(index);
@@ -579,59 +587,100 @@ function markQuizCorrect(index) {
   }
 }
 
-function renderModuleList() {
+function isLessonComplete(index) {
+  return state.codePassed.includes(index) && state.quizCorrect.includes(index);
+}
+
+function syncLessonCompletion(index) {
+  if (isLessonComplete(index)) {
+    markCompleted(index);
+    return true;
+  }
+
+  return false;
+}
+
+function isLessonUnlocked(index) {
+  if (index === 0) {
+    return true;
+  }
+
+  return isLessonComplete(index - 1);
+}
+
+function buildModuleMap() {
   const moduleMap = new Map();
 
   lessons.forEach((lesson, index) => {
-    const entry = moduleMap.get(lesson.module) || { count: 0, completed: 0 };
-    entry.count += 1;
-    if (state.completedLessons.includes(index)) {
-      entry.completed += 1;
+    if (!moduleMap.has(lesson.module)) {
+      moduleMap.set(lesson.module, []);
     }
-    moduleMap.set(lesson.module, entry);
+    moduleMap.get(lesson.module).push({ ...lesson, index });
   });
 
-  moduleList.innerHTML = "";
-
-  for (const [moduleName, info] of moduleMap.entries()) {
-    const card = document.createElement("div");
-    card.className = "module-item";
-    card.innerHTML = `
-      <strong>${moduleName} (${info.completed}/${info.count})</strong>
-      <span>${moduleDescriptions[moduleName] || "Python learning module"}</span>
-    `;
-    moduleList.appendChild(card);
-  }
+  return moduleMap;
 }
 
-function renderLessonList() {
-  lessonList.innerHTML = "";
+function renderModuleList() {
+  const moduleMap = buildModuleMap();
+  moduleList.innerHTML = "";
 
-  lessons.forEach((lesson, index) => {
-    const button = document.createElement("button");
-    const completed = state.completedLessons.includes(index);
-    button.type = "button";
-    button.className = `lesson-item ${index === state.lessonIndex ? "active" : ""}`;
-    button.innerHTML = `
-      <strong>${index + 1}. ${lesson.title}</strong>
-      <span>${lesson.summary}</span>
-      <small>${completed ? "Completed" : lesson.module}</small>
+  for (const [moduleName, moduleLessons] of moduleMap.entries()) {
+    const completed = moduleLessons.filter((lesson) => state.completedLessons.includes(lesson.index)).length;
+    const wrapper = document.createElement("details");
+    wrapper.className = "module-item module-dropdown";
+
+    const hasActiveLesson = moduleLessons.some((lesson) => lesson.index === state.lessonIndex);
+    if (hasActiveLesson) {
+      wrapper.open = true;
+    }
+
+    const summary = document.createElement("summary");
+    summary.className = "module-summary";
+    summary.innerHTML = `
+      <h4>${moduleName} (${completed}/${moduleLessons.length})</h4>
+      <p>${moduleDescriptions[moduleName] || "Python learning module"}</p>
     `;
-    button.addEventListener("click", () => {
-      state.lessonIndex = index;
-      saveState();
-      renderApp();
+    wrapper.appendChild(summary);
+
+    const lessonButtons = document.createElement("div");
+    lessonButtons.className = "module-lessons";
+
+    moduleLessons.forEach((lesson) => {
+      const button = document.createElement("button");
+      const isCompleted = isLessonComplete(lesson.index);
+      const unlocked = isLessonUnlocked(lesson.index);
+      button.type = "button";
+      button.className = `lesson-item ${lesson.index === state.lessonIndex ? "active" : ""} ${unlocked ? "" : "locked"}`.trim();
+      button.innerHTML = `
+        <strong>${lesson.index + 1}. ${lesson.title}</strong>
+        <span>${lesson.summary}</span>
+        <small>${isCompleted ? "Completed" : unlocked ? lesson.tag : "Locked"}</small>
+      `;
+      button.addEventListener("click", () => {
+        if (!unlocked) {
+          return;
+        }
+        state.lessonIndex = lesson.index;
+        saveState();
+        renderApp();
+      });
+      button.disabled = !unlocked;
+      lessonButtons.appendChild(button);
     });
-    lessonList.appendChild(button);
-  });
+
+    wrapper.appendChild(lessonButtons);
+    moduleList.appendChild(wrapper);
+  }
 }
 
 function updateProgress() {
   const completedCount = state.completedLessons.length;
-  const percent = (completedCount / lessons.length) * 100;
+  const total = lessons.length;
+  const percent = (completedCount / total) * 100;
   progressFill.style.width = `${percent}%`;
-  progressText.textContent = `${completedCount} of ${lessons.length} lessons completed`;
-  completionCount.textContent = `${completedCount}/${lessons.length}`;
+  progressText.textContent = `${completedCount} / ${total} Lessons Completed`;
+  completionCount.textContent = `${completedCount}/${total}`;
 }
 
 function renderVideoLinks(lesson) {
@@ -660,9 +709,11 @@ function renderQuiz(lesson) {
     button.className = "quiz-option";
     button.textContent = option;
 
-    if (alreadyCorrect && optionIndex === lesson.quiz.answer) {
-      button.classList.add("correct");
+    if (alreadyCorrect) {
       button.disabled = true;
+      if (optionIndex === lesson.quiz.answer) {
+        button.classList.add("correct");
+      }
     }
 
     button.addEventListener("click", () => {
@@ -675,22 +726,57 @@ function renderQuiz(lesson) {
         button.classList.add("correct");
         quizFeedback.textContent = "Correct. Nice progress.";
         markQuizCorrect(state.lessonIndex);
+        const completedNow = syncLessonCompletion(state.lessonIndex);
+        if (completedNow) {
+          practiceFeedback.textContent = "Great work. You completed this lesson by passing both code and quiz.";
+        }
       } else {
         button.classList.add("wrong");
         buttons[lesson.quiz.answer].classList.add("correct");
-        quizFeedback.textContent = "Not quite. Read the concept once more and try again on the next lesson.";
+        quizFeedback.textContent = "Not quite. Re-read the concept and try the next one.";
       }
 
-      renderLessonList();
       renderModuleList();
+      updateProgress();
+      updateLessonStatus();
     }, { once: true });
 
     quizOptions.appendChild(button);
   });
+
+  if (alreadyCorrect) {
+    quizFeedback.textContent = "Quiz completed.";
+  }
+}
+
+function updateLessonStatus() {
+  const lessonIndex = state.lessonIndex;
+  const hasCode = state.codePassed.includes(lessonIndex);
+  const hasQuiz = state.quizCorrect.includes(lessonIndex);
+  const isComplete = isLessonComplete(lessonIndex);
+
+  lessonStatus.className = "lesson-status";
+
+  if (isComplete) {
+    lessonStatus.textContent = "Lesson Completed";
+    lessonStatus.classList.add("completed");
+    return;
+  }
+
+  if (hasCode || hasQuiz) {
+    lessonStatus.textContent = hasCode ? "Quiz Required" : "Code Run Required";
+    lessonStatus.classList.add("in-progress");
+    return;
+  }
+
+  lessonStatus.textContent = "Not Completed";
 }
 
 function renderApp() {
   const lesson = lessons[state.lessonIndex];
+  const nextLessonIndex = state.lessonIndex + 1;
+  const nextButton = document.getElementById("next-lesson");
+  const prevButton = document.getElementById("prev-lesson");
 
   lessonNumber.textContent = `Lesson ${state.lessonIndex + 1} of ${lessons.length}`;
   lessonTitle.textContent = lesson.title;
@@ -701,10 +787,10 @@ function renderApp() {
   lessonAfter.textContent = lesson.after;
   lessonConcept.textContent = lesson.concept;
   lessonAnalogy.textContent = lesson.analogy;
-  lessonCode.textContent = lesson.code;
-  lessonExplanation.textContent = lesson.explanation;
   syntaxTip.textContent = lesson.syntaxTip;
   commonMistake.textContent = lesson.commonMistake;
+  lessonCode.textContent = lesson.code;
+  lessonExplanation.textContent = lesson.explanation;
   practicePrompt.textContent = lesson.practice;
   practiceHint.textContent = lesson.hint;
   practiceHint.hidden = true;
@@ -713,11 +799,14 @@ function renderApp() {
   practiceArea.value = lesson.code;
   programInput.value = lesson.defaultInput || "";
 
-  renderLessonList();
   renderModuleList();
   renderVideoLinks(lesson);
   renderQuiz(lesson);
   updateProgress();
+  updateLessonStatus();
+
+  prevButton.disabled = state.lessonIndex === 0;
+  nextButton.disabled = nextLessonIndex >= lessons.length || !isLessonComplete(state.lessonIndex);
 }
 
 async function runCode() {
@@ -746,12 +835,16 @@ async function runCode() {
 
     const result = await response.json();
     outputConsole.textContent = result.output || "Code finished with no output.";
+
     if (result.ok) {
-      practiceFeedback.textContent = "Code ran successfully. This lesson is now marked completed.";
-      markCompleted(state.lessonIndex);
-      renderLessonList();
+      markCodePassed(state.lessonIndex);
+      const completedNow = syncLessonCompletion(state.lessonIndex);
+      practiceFeedback.textContent = completedNow
+        ? "Code ran successfully. You completed this lesson by passing both code and quiz."
+        : "Code ran successfully. Now complete the quiz to unlock the next lesson.";
       renderModuleList();
       updateProgress();
+      updateLessonStatus();
     } else {
       practiceFeedback.textContent = "Python found an error. Check the output above.";
     }
@@ -771,20 +864,6 @@ document.getElementById("show-hint").addEventListener("click", () => {
 document.getElementById("use-example").addEventListener("click", () => {
   practiceArea.value = lessons[state.lessonIndex].code;
 });
-document.getElementById("prev-lesson").addEventListener("click", () => {
-  state.lessonIndex = (state.lessonIndex - 1 + lessons.length) % lessons.length;
-  saveState();
-  renderApp();
-});
-document.getElementById("next-lesson").addEventListener("click", () => {
-  state.lessonIndex = (state.lessonIndex + 1) % lessons.length;
-  saveState();
-  renderApp();
-});
-document.getElementById("clear-output").addEventListener("click", () => {
-  outputConsole.textContent = "Your output will appear here.";
-  practiceFeedback.textContent = "";
-});
 document.getElementById("mark-review").addEventListener("click", () => {
   const lesson = lessons[state.lessonIndex];
   practiceArea.value = lesson.code;
@@ -792,6 +871,28 @@ document.getElementById("mark-review").addEventListener("click", () => {
   practiceHint.hidden = true;
   practiceFeedback.textContent = "Lesson editor reset to the example code.";
   outputConsole.textContent = "Your output will appear here.";
+});
+document.getElementById("prev-lesson").addEventListener("click", () => {
+  if (state.lessonIndex === 0) {
+    return;
+  }
+  state.lessonIndex = (state.lessonIndex - 1 + lessons.length) % lessons.length;
+  saveState();
+  renderApp();
+});
+document.getElementById("next-lesson").addEventListener("click", () => {
+  if (state.lessonIndex + 1 >= lessons.length) {
+    return;
+  }
+
+  if (!state.completedLessons.includes(state.lessonIndex)) {
+    practiceFeedback.textContent = "Complete this lesson first by passing both the code run and the quiz.";
+    return;
+  }
+
+  state.lessonIndex = (state.lessonIndex + 1) % lessons.length;
+  saveState();
+  renderApp();
 });
 
 renderApp();

@@ -7,30 +7,80 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <h1>Python Zero to Confident</h1>
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-window">
+      <div class="win-titlebar">
+        <div class="win-dots"><span></span><span></span><span></span></div>
+        <span class="win-tab">auth.py</span>
+      </div>
+      <section class="auth-card" aria-labelledby="auth-title">
+        <span class="auth-kicker">Python from zero</span>
+        <h1 id="auth-title">Sign in to continue learning<span class="cursor-blink" aria-hidden="true"></span></h1>
+        <p class="auth-copy">Create your account once and your lessons, quiz progress, and course position will stay saved.</p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Authentication options">
+          <button id="login-tab" class="auth-tab active" type="button" role="tab" aria-selected="true">Login</button>
+          <button id="register-tab" class="auth-tab" type="button" role="tab" aria-selected="false">Register</button>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <label for="auth-name">Username</label>
+          <input id="auth-name" name="username" type="text" autocomplete="username" minlength="3" maxlength="24" required>
+
+          <label for="auth-password">Password</label>
+          <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="6" required>
+
+          <p id="auth-feedback" class="auth-feedback" aria-live="polite"></p>
+
+          <button id="auth-submit" class="auth-submit" type="submit">Login</button>
+        </form>
+
+        <p id="auth-helper" class="auth-helper">Use your existing account to continue from where you stopped.</p>
+      </section>
+    </div>
+  </div>
+
+  <div id="app-shell" class="app-shell" hidden>
+    <div class="win-titlebar" style="grid-column: 1 / -1;">
+      <div class="win-dots"><span></span><span></span><span></span></div>
+      <span class="win-tab">zero_to_confident.py</span>
+      <div class="win-meta">
+        <span>UTF-8</span>
+        <span class="dot-sep"></span>
+        <span>Python 3</span>
+        <span class="dot-sep"></span>
+        <span>Ln 1, Col 1</span>
+      </div>
+    </div>
+
+    <aside class="sidebar" style="grid-row: 2;">
+      <div class="brand brand-card">
+        <div class="brand-badge" aria-hidden="true">📖</div>
+        <h1>Python Learning</h1>
         <p>Learn Python from scratch with direct Tamil lessons, guided practice, and runnable code.</p>
       </div>
-
-      <section class="progress-card">
-        <h3>Course Progress</h3>
-        <div class="progress-track" aria-hidden="true">
-          <div id="progress-fill" class="progress-fill"></div>
-        </div>
-        <p id="progress-text">0 / 20 Lessons Completed</p>
-        <strong id="completion-count">0/20</strong>
-      </section>
-
+      <div class="panel-label">Explorer</div>
       <details class="sidebar-dropdown" open>
-        <summary>Modules</summary>
+        <summary>📚 Modules</summary>
         <div id="module-list"></div>
       </details>
     </aside>
 
     <main class="main-content">
-      <section class="lesson-header">
+      <section class="card hero-card">
+        <div class="hero-copy">
+          <span class="hero-kicker">Your path</span>
+          <h2 id="current-path-title">Python Foundations</h2>
+          <p id="current-path-summary">Build confidence lesson by lesson with guided explanations, runnable code, and checkpoint quizzes.</p>
+        </div>
+        <div class="hero-actions">
+          <button id="learn-pill" class="hero-pill active" type="button">📖 Learn</button>
+          <button id="practice-pill" class="hero-pill" type="button">⌨️ Practice</button>
+          <button id="continue-learning" type="button" hidden>Continue Learning</button>
+        </div>
+      </section>
+
+      <section id="learn-section" class="lesson-header">
         <span id="lesson-number"></span>
         <h2 id="lesson-title">Loading lesson...</h2>
         <div class="lesson-meta">
@@ -38,6 +88,11 @@
           <span id="lesson-status" class="lesson-status">Locked</span>
         </div>
         <p id="lesson-summary"></p>
+      </section>
+
+      <section class="card">
+        <h3>Introduction</h3>
+        <p id="lesson-introduction"></p>
       </section>
 
       <section class="card">
@@ -58,27 +113,56 @@
       <section class="card">
         <h3>Core Idea</h3>
         <p id="lesson-concept"></p>
+        <h3>Explanation</h3>
+        <p id="lesson-explanation-detail"></p>
         <h3>Real World Analogy</h3>
         <p id="lesson-analogy"></p>
-        <h3>Syntax Tip</h3>
+        <h3>Syntax</h3>
         <p id="syntax-tip"></p>
         <h3>Common Beginner Mistake</h3>
         <p id="common-mistake"></p>
       </section>
 
-      <section class="card">
+      <section class="card example-card">
         <div class="section-head">
           <h3>Example Code</h3>
           <button id="use-example" type="button">Use Example</button>
         </div>
-        <pre><code id="lesson-code"></code></pre>
-        <p id="lesson-explanation"></p>
-        <div id="video-links" class="video-links"></div>
+        <div class="example-body">
+          <pre><code id="lesson-code"></code></pre>
+          <p id="lesson-explanation"></p>
+          <div id="video-links" class="video-links"></div>
+        </div>
       </section>
 
-      <section class="card practice-card">
-        <h2>Try it Yourself</h2>
+      <section id="practice-section" class="card practice-card">
+        <div class="section-head">
+          <h2>Practice</h2>
+          <span id="challenge-score" class="lesson-status">Not Solved</span>
+        </div>
+        <div class="section-head">
+          <span id="challenge-counter" class="lesson-tag">Challenge 1 of 1</span>
+          <div class="button-row" style="margin: 0;">
+            <button id="prev-challenge" type="button">‹ Prev</button>
+            <button id="next-challenge" type="button">Next ›</button>
+          </div>
+        </div>
         <p id="practice-prompt" class="practice-prompt"></p>
+        <div class="checkpoint-strip">
+          <span id="challenge-state" class="checkpoint-badge">Challenge Pending</span>
+          <span id="quiz-state" class="checkpoint-badge">Quiz Pending</span>
+        </div>
+
+        <div class="challenge-grid">
+          <div>
+            <h3>Success Check</h3>
+            <p id="challenge-rules"></p>
+          </div>
+          <div>
+            <h3>Helpful Tip</h3>
+            <p id="challenge-tip"></p>
+          </div>
+        </div>
 
         <label for="practice-area">Your Python Code</label>
         <textarea id="practice-area" spellcheck="false"></textarea>
@@ -101,20 +185,102 @@
 
         <h3>Output</h3>
         <pre id="output-console">Your output will appear here.</pre>
+
+        <div class="ai-review-panel">
+          <div class="section-head">
+            <h3>AI Code Review</h3>
+            <button id="ai-review-button" type="button">🤖 Review My Code</button>
+          </div>
+          <p id="ai-review-status" class="practice-prompt">Run your code, then ask for a review to get feedback on style, correctness, and how to improve it.</p>
+          <div id="ai-review-output" class="ai-review-output" hidden></div>
+        </div>
       </section>
 
       <section class="card">
-        <h2>Quick Quiz</h2>
+        <h2>Quiz</h2>
+        <p id="quiz-requirement" class="practice-prompt"></p>
         <p id="quiz-question"></p>
         <div id="quiz-options"></div>
         <p id="quiz-feedback"></p>
+        <p id="quiz-explanation"></p>
+        <div class="button-row">
+          <button id="quiz-next" type="button" hidden>Next Question ›</button>
+          <button id="quiz-retake" type="button" hidden>Retake Quiz</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Summary</h2>
+        <ul id="lesson-summary-points" class="summary-list"></ul>
       </section>
 
       <section class="lesson-navigation">
-        <button id="prev-lesson" type="button">Previous Lesson</button>
-        <button id="next-lesson" type="button">Next Lesson</button>
+        <p id="finish-feedback" class="nav-feedback" aria-live="polite"></p>
+        <div class="nav-buttons">
+          <button id="prev-lesson" type="button">Previous Lesson</button>
+          <button id="next-lesson" type="button">Next Lesson</button>
+        </div>
       </section>
+
     </main>
+
+    <aside class="right-rail">
+      <details class="profile-menu">
+        <summary class="profile-summary" aria-label="User profile">
+          <span class="profile-avatar" aria-hidden="true">🧑🏽‍💻</span>
+          <strong id="user-name">Learner</strong>
+          <span class="profile-caret" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="profile-actions">
+          <button id="logout-button" type="button">Logout</button>
+        </div>
+      </details>
+
+      <div class="panel-label">Stats</div>
+      <section class="progress-card dashboard-card">
+        <div class="section-head">
+          <h3>Learner Dashboard</h3>
+          <span id="completion-percent" class="lesson-tag">0%</span>
+        </div>
+        <div class="dashboard-grid">
+          <article class="stat-card">
+            <span>Lessons Completed</span>
+            <strong id="dashboard-completed">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Current Lesson</span>
+            <strong id="dashboard-current">1</strong>
+          </article>
+          <article class="stat-card">
+            <span>Time Spent</span>
+            <strong id="dashboard-time">0m</strong>
+          </article>
+          <article class="stat-card">
+            <span>Streak</span>
+            <strong id="dashboard-streak">1 day</strong>
+          </article>
+        </div>
+        <div class="chart-panel">
+          <h4>Module Progress</h4>
+          <svg id="module-chart" class="module-chart" viewBox="0 0 320 210" role="img" aria-label="Lessons completed per module"></svg>
+        </div>
+
+        <div class="badge-panel">
+          <h4>Badges</h4>
+          <div id="badge-list" class="badge-list"></div>
+        </div>
+      </section>
+
+      <section class="progress-card">
+        <h3>Course Progress</h3>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <p id="progress-text">0 / 20 Lessons Completed</p>
+        <strong id="completion-count">0/20</strong>
+      </section>
+
+    </aside>
   </div>
 
   <script src="/app.js"></script>

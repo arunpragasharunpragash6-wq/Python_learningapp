@@ -1,0 +1,24 @@
+{
+  "users": {
+    "Arunpragash": {
+      "salt": "27c117bc539fd588cb1fbe54575a8ebe",
+      "password_hash": "d3c67234065945ad3ebc53927849419141d9225b0484e517bfa5b38a5d9be77e",
+      "progress": {
+        "lessonIndex": 0,
+        "challengePassed": [],
+        "quizPassed": [],
+        "startedLessons": [],
+        "lessonDrafts": {},
+        "quizHistory": {},
+        "challengeProgress": {},
+        "activityDates": [],
+        "timeSpentSeconds": 0,
+        "lastActiveAt": null,
+        "completedLessons": []
+      },
+      "sessions": [
+        "hxlTB_-LPA0mD4ij4I5PAv0OnCkf_SmOhW3IT8Wal8Y"
+      ]
+    }
+  }
+}

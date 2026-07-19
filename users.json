@@ -1,49 +1,23 @@
 {
   "users": {
     "Arun": {
-      "salt": "10507e0cfbcf1c8669b2024712e1a6e5",
-      "password_hash": "968785e13523aa108e4debe6786a43ef4543f8173b8b72b5cdef015852a783c1",
+      "salt": "ceb52c7f05c24c6377da1f44c67cb7f5",
+      "password_hash": "2028211c08324b691da08f68e39109a346659d461217a37ed41737078d7b1a00",
       "progress": {
         "lessonIndex": 0,
         "challengePassed": [],
         "quizPassed": [],
         "startedLessons": [],
         "lessonDrafts": {},
-        "quizHistory": {
-          "0": {
-            "qIndex": 0,
-            "optionOrder": {
-              "0": [
-                0,
-                2,
-                1
-              ]
-            },
-            "answers": {},
-            "completed": false,
-            "correctCount": 0,
-            "score": 0
-          }
-        },
-        "challengeProgress": {
-          "0": [
-            false,
-            false,
-            false,
-            false,
-            false,
-            false
-          ]
-        },
-        "activityDates": [
-          "2026-07-19"
-        ],
-        "timeSpentSeconds": 15,
-        "lastActiveAt": 1784431873781,
+        "quizHistory": {},
+        "challengeProgress": {},
+        "activityDates": [],
+        "timeSpentSeconds": 0,
+        "lastActiveAt": null,
         "completedLessons": []
       },
       "sessions": [
-        "MyACytOvlWVQwHZcGleFPmq9gQ8Bhax8NzlJnxLjpO0"
+        "4cvc43kBl6M2hhXLRhYTJu67XD-2DBuPsOayJjU0mEc"
       ]
     }
   }

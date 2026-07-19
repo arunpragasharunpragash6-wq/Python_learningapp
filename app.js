@@ -5651,32 +5651,3 @@ document.addEventListener("visibilitychange", () => {
 
 setAuthMode("login");
 restoreSession();
-
-const railToggle = document.getElementById("rail-toggle");
-const mobileRailDetails = document.getElementById("mobile-rail-details");
-const mobileRailQuery = window.matchMedia("(max-width: 1024px)");
-
-function setRailLabel(collapsed) {
-  railToggle.textContent = collapsed
-    ? "📊 Show Stats & Progress ▾"
-    : "📊 Hide Stats & Progress ▴";
-}
-
-function applyMobileRailState() {
-  if (mobileRailQuery.matches) {
-    railToggle.hidden = false;
-    mobileRailDetails.classList.add("collapsed");
-    setRailLabel(true);
-  } else {
-    railToggle.hidden = true;
-    mobileRailDetails.classList.remove("collapsed");
-  }
-}
-
-railToggle.addEventListener("click", () => {
-  const collapsed = mobileRailDetails.classList.toggle("collapsed");
-  setRailLabel(collapsed);
-});
-
-mobileRailQuery.addEventListener("change", applyMobileRailState);
-applyMobileRailState();

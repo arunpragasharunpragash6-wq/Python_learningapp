@@ -1557,6 +1557,14 @@ textarea:focus-visible {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  /* Hidden while the user is actively scrolling the lesson content; JS toggles this class */
+  .lesson-navigation.nav-hidden {
+    transform: translateY(calc(100% + 20px));
+    opacity: 0;
+    pointer-events: none;
   }
 
   .lesson-navigation .nav-feedback {

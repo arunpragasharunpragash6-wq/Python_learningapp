@@ -8,13 +8,6 @@
   box-sizing: border-box;
 }
 
-/* Guarantee hidden content stays hidden regardless of any later rule's
-   specificity (the [hidden] attribute is what app.js toggles to switch
-   between Learn and Practice content). */
-[hidden] {
-  display: none !important;
-}
-
 :root {
   /* Base surfaces — deep slate navy, never pure black */
   --bg: #0d1117;
@@ -1014,42 +1007,6 @@ textarea:focus {
 }
 
 /* ============ Lesson header ============ */
-.lesson-header-top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.topic-nav-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.topic-nav-btn {
-  padding: 6px 12px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-bright);
-  background: rgba(116, 185, 245, 0.08);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color var(--transition), background var(--transition);
-}
-
-.topic-nav-btn:hover:not(:disabled) {
-  border-color: var(--fn);
-  background: rgba(116, 185, 245, 0.16);
-}
-
-.topic-nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .lesson-header h2 {
   margin: 0.5rem 0;
   font-family: var(--font-mono);

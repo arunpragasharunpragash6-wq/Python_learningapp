@@ -236,50 +236,53 @@
         </div>
       </details>
 
-      <div class="panel-label">Stats</div>
-      <section class="progress-card dashboard-card">
-        <div class="section-head">
-          <h3>Learner Dashboard</h3>
-          <span id="completion-percent" class="lesson-tag">0%</span>
-        </div>
-        <div class="dashboard-grid">
-          <article class="stat-card">
-            <span>Lessons Completed</span>
-            <strong id="dashboard-completed">0</strong>
-          </article>
-          <article class="stat-card">
-            <span>Current Lesson</span>
-            <strong id="dashboard-current">1</strong>
-          </article>
-          <article class="stat-card">
-            <span>Time Spent</span>
-            <strong id="dashboard-time">0m</strong>
-          </article>
-          <article class="stat-card">
-            <span>Streak</span>
-            <strong id="dashboard-streak">1 day</strong>
-          </article>
-        </div>
-        <div class="chart-panel">
-          <h4>Module Progress</h4>
-          <svg id="module-chart" class="module-chart" viewBox="0 0 320 210" role="img" aria-label="Lessons completed per module"></svg>
-        </div>
+      <button id="rail-toggle" class="rail-toggle" type="button" hidden>📊 Show Stats &amp; Progress ▾</button>
 
-        <div class="badge-panel">
-          <h4>Badges</h4>
-          <div id="badge-list" class="badge-list"></div>
-        </div>
-      </section>
+      <div id="mobile-rail-details" class="mobile-rail-details">
+        <div class="panel-label">Stats</div>
+        <section class="progress-card dashboard-card">
+          <div class="section-head">
+            <h3>Learner Dashboard</h3>
+            <span id="completion-percent" class="lesson-tag">0%</span>
+          </div>
+          <div class="dashboard-grid">
+            <article class="stat-card">
+              <span>Lessons Completed</span>
+              <strong id="dashboard-completed">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Current Lesson</span>
+              <strong id="dashboard-current">1</strong>
+            </article>
+            <article class="stat-card">
+              <span>Time Spent</span>
+              <strong id="dashboard-time">0m</strong>
+            </article>
+            <article class="stat-card">
+              <span>Streak</span>
+              <strong id="dashboard-streak">1 day</strong>
+            </article>
+          </div>
+          <div class="chart-panel">
+            <h4>Module Progress</h4>
+            <svg id="module-chart" class="module-chart" viewBox="0 0 320 210" role="img" aria-label="Lessons completed per module"></svg>
+          </div>
 
-      <section class="progress-card">
-        <h3>Course Progress</h3>
-        <div class="progress-track" aria-hidden="true">
-          <div id="progress-fill" class="progress-fill"></div>
-        </div>
-        <p id="progress-text">0 / 20 Lessons Completed</p>
-        <strong id="completion-count">0/20</strong>
-      </section>
+          <div class="badge-panel">
+            <h4>Badges</h4>
+            <div id="badge-list" class="badge-list"></div>
+          </div>
+        </section>
 
+        <section class="progress-card">
+          <h3>Course Progress</h3>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <p id="progress-text">0 / 20 Lessons Completed</p>
+          <strong id="completion-count">0/20</strong>
+        </section>
+      </div>
     </aside>
   </div>
 

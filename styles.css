@@ -1546,14 +1546,32 @@ textarea:focus-visible {
   }
 
   .lesson-navigation {
-    position: sticky;
-    bottom: 8px;
-    z-index: 4;
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 45;
     padding: 10px;
-    background: rgba(10, 14, 20, 0.92);
+    background: rgba(10, 14, 20, 0.94);
     backdrop-filter: blur(10px);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .lesson-navigation .nav-buttons {
+    flex-direction: row;
+  }
+
+  .lesson-navigation .nav-buttons button {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Reserve space at the bottom of the shell so the last card isn't hidden behind the fixed nav bar */
+  .app-shell {
+    padding-bottom: 120px;
   }
 
   #run-code::before {

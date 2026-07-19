@@ -4451,6 +4451,7 @@ const aiReviewOutput = document.getElementById("ai-review-output");
 const runCodeButton = document.getElementById("run-code");
 const prevButton = document.getElementById("prev-lesson");
 const nextButton = document.getElementById("next-lesson");
+const lessonNavigation = document.querySelector(".lesson-navigation");
 const learnSection = document.getElementById("learn-section");
 const practiceSection = document.getElementById("practice-section");
 const learnModeSections = document.querySelectorAll(".mode-learn");
@@ -5647,6 +5648,35 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     lastTimerTick = Date.now();
   }
+});
+
+// On mobile, the Previous/Next Lesson bar is fixed to the bottom of the screen.
+// Hide it while the user is actively scrolling the lesson content so it doesn't
+// cover text, and bring it back once scrolling stops. Desktop layout is untouched
+// since the nav bar isn't fixed there (no CSS media query match, no listener effect).
+const mobileNavQuery = window.matchMedia("(max-width: 768px)");
+let navHideTimer = null;
+
+function handleLessonNavScroll() {
+  if (!mobileNavQuery.matches) {
+    return;
+  }
+  lessonNavigation.classList.add("nav-hidden");
+  if (navHideTimer) {
+    clearTimeout(navHideTimer);
+  }
+  navHideTimer = setTimeout(() => {
+    lessonNavigation.classList.remove("nav-hidden");
+  }, 600);
+}
+
+window.addEventListener("scroll", handleLessonNavScroll, { passive: true });
+
+mobileNavQuery.addEventListener("change", () => {
+  if (navHideTimer) {
+    clearTimeout(navHideTimer);
+  }
+  lessonNavigation.classList.remove("nav-hidden");
 });
 
 setAuthMode("login");

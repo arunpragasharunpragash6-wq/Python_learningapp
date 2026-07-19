@@ -1398,44 +1398,16 @@ textarea:focus-visible {
     position: relative;
     height: auto;
     top: 0;
-    padding: 0;
   }
 
-  /* Stats/Progress removed from mobile view entirely per request */
-  .rail-toggle,
-  .mobile-rail-details {
-    display: none !important;
+  .rail-toggle {
+    display: block;
+    width: 100%;
+    margin-bottom: 14px;
   }
 
-  /* Pin the login/logout profile chip to the top-right corner, like a normal site header */
-  .app-shell {
-    padding-top: 68px;
-  }
-
-  .profile-menu {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 50;
-    margin-bottom: 0;
-    width: auto;
-    max-width: 190px;
-  }
-
-  .profile-summary {
-    padding: 8px 10px;
-    gap: 8px;
-  }
-
-  .profile-summary strong {
-    font-size: 0.8rem;
-    max-width: 90px;
-  }
-
-  .profile-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.95rem;
+  .mobile-rail-details.collapsed {
+    display: none;
   }
 
   .hero-card {
@@ -1507,7 +1479,6 @@ textarea:focus-visible {
   .app-shell {
     gap: 14px;
     padding: 12px;
-    padding-top: 68px;
   }
 
   .user-chip {

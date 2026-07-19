@@ -4451,9 +4451,6 @@ const aiReviewOutput = document.getElementById("ai-review-output");
 const runCodeButton = document.getElementById("run-code");
 const prevButton = document.getElementById("prev-lesson");
 const nextButton = document.getElementById("next-lesson");
-const topicPrevButton = document.getElementById("topic-prev");
-const topicNextButton = document.getElementById("topic-next");
-const topicNavFeedback = document.getElementById("topic-nav-feedback");
 const learnSection = document.getElementById("learn-section");
 const practiceSection = document.getElementById("practice-section");
 const learnModeSections = document.querySelectorAll(".mode-learn");
@@ -5079,12 +5076,8 @@ function updateLessonStatus() {
 }
 
 function updateNavigationButtons() {
-  const prevDisabled = state.lessonIndex === 0;
-  const nextDisabled = state.lessonIndex + 1 >= lessons.length || !isLessonComplete(state.lessonIndex);
-  prevButton.disabled = prevDisabled;
-  nextButton.disabled = nextDisabled;
-  topicPrevButton.disabled = prevDisabled;
-  topicNextButton.disabled = nextDisabled;
+  prevButton.disabled = state.lessonIndex === 0;
+  nextButton.disabled = state.lessonIndex + 1 >= lessons.length || !isLessonComplete(state.lessonIndex);
 }
 
 function renderVideoLinks(lesson) {
@@ -5326,7 +5319,6 @@ function renderApp() {
   lessonExplanation.textContent = lesson.explanation;
   finishFeedback.textContent = "";
   finishFeedback.classList.remove("success");
-  topicNavFeedback.textContent = "";
   resetAiReviewPanel();
 
   setHeroMode("learn");
@@ -5625,7 +5617,7 @@ quizNextButton.addEventListener("click", () => {
 quizRetakeButton.addEventListener("click", () => {
   retakeQuiz(lessons[state.lessonIndex]);
 });
-function goToPreviousTopic() {
+prevButton.addEventListener("click", () => {
   if (state.lessonIndex === 0) {
     return;
   }
@@ -5633,18 +5625,15 @@ function goToPreviousTopic() {
   state.lessonIndex -= 1;
   renderApp();
   persistProgress();
-}
-
-function goToNextTopic() {
+});
+nextButton.addEventListener("click", () => {
   if (state.lessonIndex + 1 >= lessons.length) {
     return;
   }
 
   if (!isLessonComplete(state.lessonIndex)) {
-    const message = "Solve the challenge and pass the quiz to unlock the next lesson.";
-    finishFeedback.textContent = message;
+    finishFeedback.textContent = "Solve the challenge and pass the quiz to unlock the next lesson.";
     finishFeedback.classList.remove("success");
-    topicNavFeedback.textContent = message;
     updateNavigationButtons();
     return;
   }
@@ -5652,12 +5641,7 @@ function goToNextTopic() {
   state.lessonIndex += 1;
   renderApp();
   persistProgress();
-}
-
-prevButton.addEventListener("click", goToPreviousTopic);
-nextButton.addEventListener("click", goToNextTopic);
-topicPrevButton.addEventListener("click", goToPreviousTopic);
-topicNextButton.addEventListener("click", goToNextTopic);
+});
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {

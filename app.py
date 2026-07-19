@@ -7,10 +7,9 @@ import subprocess
 import sys
 import tempfile
 import threading
-import time
 import urllib.error
+import urllib.parse
 import urllib.request
-from contextlib import contextmanager
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -20,18 +19,6 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8000"))
 USERS_FILE = ROOT / "users.json"
 DATA_LOCK = threading.Lock()
-
-# Sessions expire instead of living forever in users.json.
-SESSION_TTL_SECONDS = 30 * 24 * 60 * 60  # 30 days
-
-# Simple in-memory login throttling (per "username:ip" key). This is best
-# effort (resets on restart, not shared across processes) but stops naive
-# brute-force loops without adding an external dependency.
-LOGIN_ATTEMPT_LIMIT = 5
-LOGIN_ATTEMPT_WINDOW_SECONDS = 5 * 60
-LOGIN_LOCKOUT_SECONDS = 5 * 60
-_login_attempts_lock = threading.Lock()
-_login_attempts: dict[str, list[float]] = {}
 STATIC_FILES = {
     "/": "index.html",
     "/index.html": "index.html",
@@ -52,9 +39,8 @@ DEFAULT_PROGRESS = {
 }
 
 
-ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
-ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
-ANTHROPIC_VERSION = "2023-06-01"
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+GEMINI_MODEL = "gemini-2.5-flash"
 AI_REVIEW_SYSTEM_PROMPT = (
     "You are a friendly, encouraging Python tutor reviewing a beginner student's practice code. "
     "Respond with plain text (short paragraphs and/or a short bullet list, no markdown headers). "
@@ -66,12 +52,12 @@ AI_REVIEW_SYSTEM_PROMPT = (
 
 
 def call_ai_review(code: str, output: str, lesson_title: str, concept: str, challenge_prompt: str) -> dict:
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not api_key:
         return {
             "ok": False,
             "error": (
-                "AI review is not set up yet. Set the ANTHROPIC_API_KEY environment variable "
+                "AI review is not set up yet. Set the GEMINI_API_KEY environment variable "
                 "before starting the server to enable this feature."
             ),
         }
@@ -86,21 +72,19 @@ def call_ai_review(code: str, output: str, lesson_title: str, concept: str, chal
 
     body = json.dumps(
         {
-            "model": ANTHROPIC_MODEL,
-            "max_tokens": 500,
-            "system": AI_REVIEW_SYSTEM_PROMPT,
-            "messages": [{"role": "user", "content": user_content}],
+            "contents": [{"role": "user", "parts": [{"text": user_content}]}],
+            "systemInstruction": {"parts": [{"text": AI_REVIEW_SYSTEM_PROMPT}]},
+            "generationConfig": {"maxOutputTokens": 500},
         }
     ).encode("utf-8")
 
+    url = f"{GEMINI_API_URL.format(model=GEMINI_MODEL)}?key={urllib.parse.quote(api_key)}"
     request = urllib.request.Request(
-        ANTHROPIC_API_URL,
+        url,
         data=body,
         method="POST",
         headers={
             "Content-Type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": ANTHROPIC_VERSION,
         },
     )
 
@@ -108,16 +92,27 @@ def call_ai_review(code: str, output: str, lesson_title: str, concept: str, chal
         with urllib.request.urlopen(request, timeout=20) as response:
             payload = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
+        if error.code == 404:
+            return {
+                "ok": False,
+                "error": (
+                    "AI review request failed (status 404). This usually means the API key "
+                    "format isn't compatible yet - try generating a fresh key in AI Studio, "
+                    "or use one created via console.cloud.google.com/apis/credentials instead."
+                ),
+            }
         return {"ok": False, "error": f"AI review request failed (status {error.code})."}
     except urllib.error.URLError:
         return {"ok": False, "error": "Could not reach the AI review service. Check your internet connection."}
     except TimeoutError:
         return {"ok": False, "error": "The AI review took too long to respond. Please try again."}
 
-    text_blocks = [
-        block.get("text", "") for block in payload.get("content", []) if block.get("type") == "text"
-    ]
-    review_text = "\n".join(block for block in text_blocks if block).strip()
+    candidates = payload.get("candidates") or []
+    text_blocks = []
+    if candidates:
+        parts = candidates[0].get("content", {}).get("parts", [])
+        text_blocks = [part.get("text", "") for part in parts if part.get("text")]
+    review_text = "\n".join(text_blocks).strip()
 
     if not review_text:
         return {"ok": False, "error": "The AI reviewer did not return any feedback. Please try again."}
@@ -180,23 +175,6 @@ def load_users() -> dict:
 
 def save_users(data: dict) -> None:
     with DATA_LOCK:
-        USERS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
-
-
-@contextmanager
-def users_transaction():
-    """Read, yield, and write users.json under a single lock acquisition.
-
-    load_users()/save_users() each grab the lock separately, which leaves a
-    window between "check if a username exists" and "write the new user"
-    where a second request on another thread (ThreadingHTTPServer runs every
-    request on its own thread) can slip in and cause lost updates or
-    duplicate accounts. Use this for any read-then-modify-then-write.
-    """
-    ensure_users_file()
-    with DATA_LOCK:
-        data = json.loads(USERS_FILE.read_text(encoding="utf-8"))
-        yield data
         USERS_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -295,26 +273,12 @@ def get_bearer_token(handler: BaseHTTPRequestHandler) -> str:
     return header.removeprefix("Bearer ").strip()
 
 
-def _prune_expired_sessions(sessions: list) -> list:
-    now = time.time()
-    fresh = []
-    for session in sessions:
-        # Back-compat: earlier versions stored sessions as bare token strings
-        # with no expiry. Treat those as still valid but upgrade them.
-        if isinstance(session, str):
-            fresh.append({"token": session, "expires_at": now + SESSION_TTL_SECONDS})
-        elif isinstance(session, dict) and session.get("expires_at", 0) > now:
-            fresh.append(session)
-    return fresh
-
-
 def create_session(username: str) -> str:
-    with users_transaction() as data:
-        user = data["users"][username]
-        sessions = _prune_expired_sessions(user.get("sessions", []))
-        token = secrets.token_urlsafe(32)
-        sessions.append({"token": token, "expires_at": time.time() + SESSION_TTL_SECONDS})
-        user["sessions"] = sessions
+    data = load_users()
+    token = secrets.token_urlsafe(32)
+    user = data["users"][username]
+    user.setdefault("sessions", []).append(token)
+    save_users(data)
     return token
 
 
@@ -323,13 +287,9 @@ def resolve_username_from_token(token: str) -> str | None:
         return None
 
     data = load_users()
-    now = time.time()
     for username, user in data.get("users", {}).items():
-        for session in user.get("sessions", []):
-            if isinstance(session, str) and session == token:
-                return username
-            if isinstance(session, dict) and session.get("token") == token and session.get("expires_at", 0) > now:
-                return username
+        if token in user.get("sessions", []):
+            return username
     return None
 
 
@@ -337,44 +297,13 @@ def remove_session(token: str) -> None:
     if not token:
         return
 
-    with users_transaction() as data:
-        for user in data.get("users", {}).values():
-            sessions = user.get("sessions", [])
-            filtered = [
-                session
-                for session in sessions
-                if (session.get("token") if isinstance(session, dict) else session) != token
-            ]
-            if len(filtered) != len(sessions):
-                user["sessions"] = filtered
-                return
-
-
-def _login_throttle_key(username: str, client_ip: str) -> str:
-    return f"{username.lower()}:{client_ip}"
-
-
-def is_login_locked_out(username: str, client_ip: str) -> bool:
-    key = _login_throttle_key(username, client_ip)
-    now = time.time()
-    with _login_attempts_lock:
-        attempts = [t for t in _login_attempts.get(key, []) if now - t < LOGIN_ATTEMPT_WINDOW_SECONDS]
-        _login_attempts[key] = attempts
-        if len(attempts) < LOGIN_ATTEMPT_LIMIT:
-            return False
-        return now - attempts[-1] < LOGIN_LOCKOUT_SECONDS
-
-
-def record_failed_login(username: str, client_ip: str) -> None:
-    key = _login_throttle_key(username, client_ip)
-    with _login_attempts_lock:
-        _login_attempts.setdefault(key, []).append(time.time())
-
-
-def clear_login_attempts(username: str, client_ip: str) -> None:
-    key = _login_throttle_key(username, client_ip)
-    with _login_attempts_lock:
-        _login_attempts.pop(key, None)
+    data = load_users()
+    for user in data.get("users", {}).values():
+        sessions = user.get("sessions", [])
+        if token in sessions:
+            user["sessions"] = [session for session in sessions if session != token]
+            save_users(data)
+            return
 
 
 class AppHandler(BaseHTTPRequestHandler):
@@ -476,18 +405,19 @@ class AppHandler(BaseHTTPRequestHandler):
             self.send_json({"error": "Password must be at least 6 characters."}, status=HTTPStatus.BAD_REQUEST)
             return
 
-        with users_transaction() as data:
-            if username in data["users"]:
-                self.send_json({"error": "That username already exists."}, status=HTTPStatus.CONFLICT)
-                return
+        data = load_users()
+        if username in data["users"]:
+            self.send_json({"error": "That username already exists."}, status=HTTPStatus.CONFLICT)
+            return
 
-            salt = secrets.token_hex(16)
-            data["users"][username] = {
-                "salt": salt,
-                "password_hash": hash_password(password, salt),
-                "progress": fresh_progress(),
-                "sessions": [],
-            }
+        salt = secrets.token_hex(16)
+        data["users"][username] = {
+            "salt": salt,
+            "password_hash": hash_password(password, salt),
+            "progress": fresh_progress(),
+            "sessions": [],
+        }
+        save_users(data)
 
         token = create_session(username)
         self.send_json({"ok": True, "token": token, "username": username})
@@ -499,24 +429,13 @@ class AppHandler(BaseHTTPRequestHandler):
 
         username = str(payload.get("username", "")).strip()
         password = str(payload.get("password", ""))
-        client_ip = self.client_address[0] if self.client_address else "unknown"
-
-        if is_login_locked_out(username, client_ip):
-            self.send_json(
-                {"error": "Too many failed attempts. Please wait a few minutes and try again."},
-                status=HTTPStatus.TOO_MANY_REQUESTS,
-            )
-            return
-
         data = load_users()
         user = data["users"].get(username)
 
         if not user or not verify_password(password, user["salt"], user["password_hash"]):
-            record_failed_login(username, client_ip)
             self.send_json({"error": "Invalid username or password."}, status=HTTPStatus.UNAUTHORIZED)
             return
 
-        clear_login_attempts(username, client_ip)
         token = create_session(username)
         self.send_json({"ok": True, "token": token, "username": username})
 
@@ -551,8 +470,9 @@ class AppHandler(BaseHTTPRequestHandler):
             return
 
         progress = clean_progress(payload.get("progress"))
-        with users_transaction() as data:
-            data["users"][username]["progress"] = progress
+        data = load_users()
+        data["users"][username]["progress"] = progress
+        save_users(data)
         self.send_json({"ok": True, "progress": progress})
 
     def handle_ai_review(self) -> None:

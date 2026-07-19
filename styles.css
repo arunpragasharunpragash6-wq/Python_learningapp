@@ -411,6 +411,11 @@ textarea:focus {
   padding: 0;
 }
 
+.rail-toggle {
+  display: none;
+}
+
+
 .main-content {
   display: flex;
   flex-direction: column;
@@ -1393,6 +1398,16 @@ textarea:focus-visible {
     position: relative;
     height: auto;
     top: 0;
+  }
+
+  .rail-toggle {
+    display: block;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+
+  .mobile-rail-details.collapsed {
+    display: none;
   }
 
   .hero-card {

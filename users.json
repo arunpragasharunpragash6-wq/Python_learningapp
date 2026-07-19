@@ -1,23 +1,53 @@
 {
   "users": {
     "Arunpragash": {
-      "salt": "27c117bc539fd588cb1fbe54575a8ebe",
-      "password_hash": "d3c67234065945ad3ebc53927849419141d9225b0484e517bfa5b38a5d9be77e",
+      "salt": "ff48da3e5cdefffd20a2bce5d697ec6c",
+      "password_hash": "bee07416c48347dbb425593aae4d197121e2935a54e031c64486073d4119f1fd",
       "progress": {
         "lessonIndex": 0,
         "challengePassed": [],
         "quizPassed": [],
-        "startedLessons": [],
-        "lessonDrafts": {},
-        "quizHistory": {},
-        "challengeProgress": {},
-        "activityDates": [],
-        "timeSpentSeconds": 0,
-        "lastActiveAt": null,
+        "startedLessons": [
+          0
+        ],
+        "lessonDrafts": {
+          "0:0": "print(\"my name is arun\")\nprint(\"want to become an developer\")"
+        },
+        "quizHistory": {
+          "0": {
+            "qIndex": 0,
+            "optionOrder": {
+              "0": [
+                2,
+                1,
+                0
+              ]
+            },
+            "answers": {},
+            "completed": false,
+            "correctCount": 0,
+            "score": 0
+          }
+        },
+        "challengeProgress": {
+          "0": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "activityDates": [
+          "2026-07-19"
+        ],
+        "timeSpentSeconds": 99,
+        "lastActiveAt": 1784430297583,
         "completedLessons": []
       },
       "sessions": [
-        "hxlTB_-LPA0mD4ij4I5PAv0OnCkf_SmOhW3IT8Wal8Y"
+        "zmbFtUxtGdkoWy5vx9bMakxqEUTBLWVnbZwqDaiwoZM"
       ]
     }
   }
